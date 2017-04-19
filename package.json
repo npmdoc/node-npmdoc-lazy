@@ -1,7 +1,7 @@
 {
     "author": "kai zhu <kaizhu256@gmail.com>",
     "buildNpmdoc": "lazy",
-    "description": "api documentation for [lazy (v1.0.11)](https://github.com/pkrumins/node-lazy#readme) [![npm package](https://img.shields.io/npm/v/npmdoc-lazy.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-lazy) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-lazy.svg)](https://travis-ci.org/npmdoc/node-npmdoc-lazy)",
+    "description": "#### api documentation for  [lazy (v1.0.11)](https://github.com/pkrumins/node-lazy#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-lazy.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-lazy) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-lazy.svg)](https://travis-ci.org/npmdoc/node-npmdoc-lazy)",
     "devDependencies": {
         "electron-lite": "kaizhu256/node-electron-lite#alpha",
         "lazy": "*",
@@ -36,5 +36,5 @@
         "start": "(set -e; export PORT=${PORT:-8080}; utility2 start test.js)",
         "test": "(set -e; export PORT=$(utility2 shServerPortRandom); utility2 test test.js)"
     },
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
