@@ -63,6 +63,15 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.lazy.lazy">
+            function <span class="apidocSignatureSpan"></span>lazy
+            <span class="apidocSignatureSpan">(em, opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.lazy.range">
             function <span class="apidocSignatureSpan">lazy.</span>range
             <span class="apidocSignatureSpan">()</span>
@@ -81,10 +90,223 @@
 
     </ol></li>
 
+    <li class="apidocModuleLi"><a href="#apidoc.module.lazy.lazy">module lazy.lazy</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.lazy.lazy.lazy">
+            function <span class="apidocSignatureSpan">lazy.</span>lazy
+            <span class="apidocSignatureSpan">(em, opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.lazy.lazy.range">
+            function <span class="apidocSignatureSpan">lazy.lazy.</span>range
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.lazy.lazy.super_">
+            function <span class="apidocSignatureSpan">lazy.lazy.</span>super_
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.lazy" id="apidoc.module.lazy">module lazy</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.lazy.lazy" id="apidoc.element.lazy.lazy">
+        function <span class="apidocSignatureSpan"></span>lazy
+        <span class="apidocSignatureSpan">(em, opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function Lazy(em, opts) {
+    if (!(this instanceof Lazy)) return new Lazy(em, opts);
+    EventEmitter.call(this);
+    var self = this;
+
+
+    self.once = function (name, f) {
+        self.on(name, function g () {
+            self.removeListener(name, g);
+            f.apply(this, arguments);
+        });
+    }
+
+    if (!opts) opts = {};
+    var dataName = opts.data || &#x27;data&#x27;;
+    var pipeName = opts.pipe || &#x27;pipe&#x27;;
+    var endName = opts.pipe || &#x27;end&#x27;;
+
+    if (pipeName != endName) {
+        var piped = false;
+        self.once(pipeName, function () { piped = true });
+        self.once(endName, function () {
+            if (!piped) self.emit(pipeName);
+        });
+    }
+
+    self.push = function (x) {
+        self.emit(dataName, x);
+    }
+
+    self.end = function () {
+        self.emit(endName);
+    }
+
+    if (em &#x26;&#x26; em.on) {
+        em.on(endName, function () {
+            self.emit(endName);
+        });
+        self.on(pipeName, function () {
+            em.emit(pipeName);
+        });
+        // Check for v0.10 or Greater (Stream2 has Duplex type)
+        if (stream.Duplex &#x26;&#x26; em instanceof(stream)) {
+            em.on(&#x27;readable&#x27;, function () {
+                var x = em.read();
+                self.emit(dataName, x);
+            });
+        } else {
+            // Old Stream1 or Event support
+            em.on(dataName, function (x) {
+                self.emit(dataName, x);
+            });
+        }
+    }
+
+    function newLazy (g, h, l) {
+        if (!g) {
+            g = function () {
+                return true;
+            };
+        }
+        if (!h) {
+            h = function (x) {
+                return x;
+            };
+        }
+        var lazy = new Lazy(null, opts, l);
+        self.on(dataName, function (x, y) {
+            if (g.call(lazy, x)) {
+                lazy.emit(dataName, h(x), y);
+            }
+        });
+        self.once(pipeName, function () {
+            lazy.emit(pipeName);
+        });
+        return lazy;
+    }
+
+    self.filter = function (f) {
+        return newLazy(function (x) {
+            return f(x);
+        });
+    }
+
+    self.forEach = function (f) {
+        return newLazy(function (x) {
+            f(x);
+            return true;
+        });
+    }
+
+    self.map = function (f) {
+        return newLazy(
+            function () { return true },
+            function (x) { return f(x) }
+        );
+    }
+
+    self.head = function (f) {
+        var lazy = newLazy();
+        lazy.on(dataName, function g (x) {
+            f(x)
+            lazy.removeListener(dataName, g)
+        })
+    }
+
+    self.tail = function () {
+        var skip = true;
+        return newLazy(function () {
+            if (skip) {
+                skip = false;
+                return false;
+            }
+            return true;
+        });
+    }
+
+    self.skip = function (n) {
+        return newLazy(function () {
+            if (n &#x3e; 0) {
+                n--;
+                return false;
+            }
+            return true;
+        });
+    }
+
+    self.take = function (n) {
+        return newLazy(function () {
+            if (n == 0) self.emit(pipeName);
+            return n-- &#x3e; 0;
+        });
+    }
+
+    self.takeWhile = function (f) {
+        var cond = true;
+        return newLazy(function (x) {
+            if (cond &#x26;&#x26; f(x)) return true;
+            cond = false;
+            self.emit(pipeName);
+            return false;
+        });
+    }
+
+    self.foldr = function (op, i, f) {
+        var acc = i;
+        var lazy = newLazy();
+        lazy.on(dataName, function g (x) {
+            acc = op(x, acc);
+        });
+        lazy.once(pipeName, function () {
+            f(acc);
+        });
+    }
+
+    self.sum = function (f) {
+        return self.foldr(function (x, acc) { return x + acc }, 0, f);
+    }
+
+    self.product = function (f) {
+        return self.foldr(function (x, acc) { return x*acc }, 1, f);
+    }
+
+    self.join = function (f) {
+        var data = []
+        var lazy = newLazy(function (x) {
+            data.push(x);
+            return true;
+        });
+        lazy.once(pipeName, function () { f(data) }); ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
     <h2>
@@ -205,6 +427,323 @@ Here are several examples:
     <h2>
         <a href="#apidoc.element.lazy.super_" id="apidoc.element.lazy.super_">
         function <span class="apidocSignatureSpan">lazy.</span>super_
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function EventEmitter() {
+  EventEmitter.init.call(this);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.lazy.lazy" id="apidoc.module.lazy.lazy">module lazy.lazy</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.lazy.lazy.lazy" id="apidoc.element.lazy.lazy.lazy">
+        function <span class="apidocSignatureSpan">lazy.</span>lazy
+        <span class="apidocSignatureSpan">(em, opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function Lazy(em, opts) {
+    if (!(this instanceof Lazy)) return new Lazy(em, opts);
+    EventEmitter.call(this);
+    var self = this;
+
+
+    self.once = function (name, f) {
+        self.on(name, function g () {
+            self.removeListener(name, g);
+            f.apply(this, arguments);
+        });
+    }
+
+    if (!opts) opts = {};
+    var dataName = opts.data || &#x27;data&#x27;;
+    var pipeName = opts.pipe || &#x27;pipe&#x27;;
+    var endName = opts.pipe || &#x27;end&#x27;;
+
+    if (pipeName != endName) {
+        var piped = false;
+        self.once(pipeName, function () { piped = true });
+        self.once(endName, function () {
+            if (!piped) self.emit(pipeName);
+        });
+    }
+
+    self.push = function (x) {
+        self.emit(dataName, x);
+    }
+
+    self.end = function () {
+        self.emit(endName);
+    }
+
+    if (em &#x26;&#x26; em.on) {
+        em.on(endName, function () {
+            self.emit(endName);
+        });
+        self.on(pipeName, function () {
+            em.emit(pipeName);
+        });
+        // Check for v0.10 or Greater (Stream2 has Duplex type)
+        if (stream.Duplex &#x26;&#x26; em instanceof(stream)) {
+            em.on(&#x27;readable&#x27;, function () {
+                var x = em.read();
+                self.emit(dataName, x);
+            });
+        } else {
+            // Old Stream1 or Event support
+            em.on(dataName, function (x) {
+                self.emit(dataName, x);
+            });
+        }
+    }
+
+    function newLazy (g, h, l) {
+        if (!g) {
+            g = function () {
+                return true;
+            };
+        }
+        if (!h) {
+            h = function (x) {
+                return x;
+            };
+        }
+        var lazy = new Lazy(null, opts, l);
+        self.on(dataName, function (x, y) {
+            if (g.call(lazy, x)) {
+                lazy.emit(dataName, h(x), y);
+            }
+        });
+        self.once(pipeName, function () {
+            lazy.emit(pipeName);
+        });
+        return lazy;
+    }
+
+    self.filter = function (f) {
+        return newLazy(function (x) {
+            return f(x);
+        });
+    }
+
+    self.forEach = function (f) {
+        return newLazy(function (x) {
+            f(x);
+            return true;
+        });
+    }
+
+    self.map = function (f) {
+        return newLazy(
+            function () { return true },
+            function (x) { return f(x) }
+        );
+    }
+
+    self.head = function (f) {
+        var lazy = newLazy();
+        lazy.on(dataName, function g (x) {
+            f(x)
+            lazy.removeListener(dataName, g)
+        })
+    }
+
+    self.tail = function () {
+        var skip = true;
+        return newLazy(function () {
+            if (skip) {
+                skip = false;
+                return false;
+            }
+            return true;
+        });
+    }
+
+    self.skip = function (n) {
+        return newLazy(function () {
+            if (n &#x3e; 0) {
+                n--;
+                return false;
+            }
+            return true;
+        });
+    }
+
+    self.take = function (n) {
+        return newLazy(function () {
+            if (n == 0) self.emit(pipeName);
+            return n-- &#x3e; 0;
+        });
+    }
+
+    self.takeWhile = function (f) {
+        var cond = true;
+        return newLazy(function (x) {
+            if (cond &#x26;&#x26; f(x)) return true;
+            cond = false;
+            self.emit(pipeName);
+            return false;
+        });
+    }
+
+    self.foldr = function (op, i, f) {
+        var acc = i;
+        var lazy = newLazy();
+        lazy.on(dataName, function g (x) {
+            acc = op(x, acc);
+        });
+        lazy.once(pipeName, function () {
+            f(acc);
+        });
+    }
+
+    self.sum = function (f) {
+        return self.foldr(function (x, acc) { return x + acc }, 0, f);
+    }
+
+    self.product = function (f) {
+        return self.foldr(function (x, acc) { return x*acc }, 1, f);
+    }
+
+    self.join = function (f) {
+        var data = []
+        var lazy = newLazy(function (x) {
+            data.push(x);
+            return true;
+        });
+        lazy.once(pipeName, function () { f(data) }); ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.lazy.lazy.range" id="apidoc.element.lazy.lazy.range">
+        function <span class="apidocSignatureSpan">lazy.lazy.</span>range
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">range = function () {
+    var args = arguments;
+    var step = 1;
+    var infinite = false;
+
+    if (args.length == 1 &#x26;&#x26; typeof args[0] == &#x27;number&#x27;) {
+        var i = 0, j = args[0];
+    }
+    else if (args.length == 1 &#x26;&#x26; typeof args[0] == &#x27;string&#x27;) { // &#x27;start[,next]..[end]&#x27;
+        var arg = args[0];
+        var startOpen = false, endClosed = false;
+        if (arg[0] == &#x27;(&#x27; || arg[0] == &#x27;[&#x27;) {
+            if (arg[0] == &#x27;(&#x27;) startOpen = true;
+            arg = arg.slice(1);
+        }
+        if (arg.slice(-1) == &#x27;]&#x27;) endClosed = true;
+
+        var parts = arg.split(&#x27;..&#x27;);
+        if (parts.length != 2)
+            throw new Error(&#x22;single argument range takes &#x27;start..&#x27; or &#x27;start..end&#x27; or &#x27;start,next..end&#x27;&#x22;);
+
+        if (parts[1] == &#x27;&#x27;) { // &#x27;start..&#x27;
+            var i = parts[0];
+            infinite = true;
+        }
+        else { // &#x27;start[,next]..end&#x27;
+            var progression = parts[0].split(&#x27;,&#x27;);
+            if (progression.length == 1) { // start..end
+                var i = parts[0], j = parts[1];
+            }
+            else { // &#x27;start,next..end&#x27;
+                var i = progression[0], j = parts[1];
+                step = Math.abs(progression[1]-i);
+            }
+        }
+
+        i = parseInt(i, 10);
+        j = parseInt(j, 10);
+
+        if (startOpen) {
+            if (infinite || i &#x3c; j) i++;
+            else i--;
+        }
+
+        if (endClosed) {
+            if (i &#x3c; j) j++;
+            else j--;
+        }
+    }
+    else if (args.length == 2 || args.length == 3) { // start, end[, step]
+        var i = args[0], j = args[1];
+        if (args.length == 3) {
+            var step = args[2];
+        }
+    }
+    else {
+        throw new Error(&#x22;range takes 1, 2 or 3 arguments&#x22;);
+    }
+    var lazy = new Lazy;
+    var stopInfinite = false;
+    lazy.on(&#x27;pipe&#x27;, function () {
+        stopInfinite = true;
+    });
+    if (infinite) {
+        process.nextTick(function g () {
+            if (stopInfinite) return;
+            lazy.emit(&#x27;data&#x27;, i++);
+            process.nextTick(g);
+        });
+    }
+    else {
+        process.nextTick(function () {
+            if (i &#x3c; j) {
+                for (; i&#x3c;j; i+=step) {
+                    lazy.emit(&#x27;data&#x27;, i)
+                }
+            }
+            else {
+                for (; i&#x3e;j; i-=step) {
+                    lazy.emit(&#x27;data&#x27;, i)
+                }
+            }
+            lazy.emit(&#x27;end&#x27;);
+        });
+    }
+    return lazy;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+* lazy.tail(f)
+* lazy.join(f)
+
+The Lazy object itself has a .range property for generating all the possible ranges.
+
+Here are several examples:
+
+* Lazy.<span class="apidocCodeKeywordSpan">range</span>(&#x27;10..&#x27;) - infinite range starting from 10
+* Lazy.range(&#x27;(10..&#x27;) - infinite range starting from 11
+* Lazy.range(10) - range from 0 to 9
+* Lazy.range(-10, 10) - range from -10 to 9 (-10, -9, ... 0, 1, ... 9)
+* Lazy.range(-10, 10, 2) - range from -10 to 8, skipping every 2nd element (-10, -8, ... 0, 2, 4, 6, 8)
+* Lazy.range(10, 0, 2) - reverse range from 10 to 1, skipping every 2nd element (10, 8, 6, 4, 2)
+* Lazy.range(10, 0) - reverse range from 10 to 1
+* Lazy.range(&#x27;5..50&#x27;) - range from 5 to 49
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.lazy.lazy.super_" id="apidoc.element.lazy.lazy.super_">
+        function <span class="apidocSignatureSpan">lazy.lazy.</span>super_
         <span class="apidocSignatureSpan">()</span>
         </a>
     </h2>

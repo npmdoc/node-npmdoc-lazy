@@ -1,28 +1,28 @@
 <svg height="398" width="720" xmlns="http://www.w3.org/2000/svg">
 <rect height="398" fill="#555" width="720"></rect>
 <text fill="#7f7" font-family="Courier New" font-size="12" xml:space="preserve">
-<tspan x="10" y="26">  0.  2017-04-07 05:11:09 +0000    44092 byte  .</tspan>
-<tspan x="10" y="42">  1.  2017-04-07 05:11:09 +0000     6093 byte  README.md</tspan>
-<tspan x="10" y="58">  2.  2017-04-07 05:11:09 +0000     9360 byte  lazy.js</tspan>
-<tspan x="10" y="74">  3.  2017-04-07 05:11:09 +0000     8304 byte  package.json</tspan>
-<tspan x="10" y="90">  4.  2017-04-07 05:11:09 +0000      989 byte  test/bucket.js</tspan>
-<tspan x="10" y="106">  5.  2017-04-07 05:11:09 +0000     1164 byte  test/complex.js</tspan>
-<tspan x="10" y="122">  6.  2017-04-07 05:11:09 +0000      698 byte  test/custom.js</tspan>
-<tspan x="10" y="138">  7.  2017-04-07 05:11:09 +0000      715 byte  test/em.js</tspan>
-<tspan x="10" y="154">  8.  2017-04-07 05:11:09 +0000      569 byte  test/filter.js</tspan>
-<tspan x="10" y="170">  9.  2017-04-07 05:11:09 +0000      540 byte  test/foldr.js</tspan>
-<tspan x="10" y="186"> 10.  2017-04-07 05:11:09 +0000      612 byte  test/forEach.js</tspan>
-<tspan x="10" y="202"> 11.  2017-04-07 05:11:09 +0000      491 byte  test/head.js</tspan>
-<tspan x="10" y="218"> 12.  2017-04-07 05:11:09 +0000      518 byte  test/join.js</tspan>
-<tspan x="10" y="234"> 13.  2017-04-07 05:11:09 +0000     2296 byte  test/lines.js</tspan>
-<tspan x="10" y="250"> 14.  2017-04-07 05:11:09 +0000      569 byte  test/map.js</tspan>
-<tspan x="10" y="266"> 15.  2017-04-07 05:11:09 +0000      884 byte  test/pipe.js</tspan>
-<tspan x="10" y="282"> 16.  2017-04-07 05:11:09 +0000      519 byte  test/product.js</tspan>
-<tspan x="10" y="298"> 17.  2017-04-07 05:11:09 +0000     7128 byte  test/range.js</tspan>
-<tspan x="10" y="314"> 18.  2017-04-07 05:11:09 +0000      541 byte  test/skip.js</tspan>
-<tspan x="10" y="330"> 19.  2017-04-07 05:11:09 +0000      492 byte  test/sum.js</tspan>
-<tspan x="10" y="346"> 20.  2017-04-07 05:11:09 +0000      538 byte  test/tail.js</tspan>
-<tspan x="10" y="362"> 21.  2017-04-07 05:11:09 +0000      518 byte  test/take.js</tspan>
-<tspan x="10" y="378"> 22.  2017-04-07 05:11:09 +0000      554 byte  test/takeWhile.js</tspan>
+<tspan x="10" y="26">  0.  2017-04-19 11:18:31 +0000    44092 bytes  .</tspan>
+<tspan x="10" y="42">  1.  2017-04-19 11:18:31 +0000     6093 bytes  README.md</tspan>
+<tspan x="10" y="58">  2.  2017-04-19 11:18:31 +0000     9360 bytes  lazy.js</tspan>
+<tspan x="10" y="74">  3.  2017-04-19 11:18:31 +0000     8304 bytes  package.json</tspan>
+<tspan x="10" y="90">  4.  2017-04-19 11:18:31 +0000      989 bytes  test/bucket.js</tspan>
+<tspan x="10" y="106">  5.  2017-04-19 11:18:31 +0000     1164 bytes  test/complex.js</tspan>
+<tspan x="10" y="122">  6.  2017-04-19 11:18:31 +0000      698 bytes  test/custom.js</tspan>
+<tspan x="10" y="138">  7.  2017-04-19 11:18:31 +0000      715 bytes  test/em.js</tspan>
+<tspan x="10" y="154">  8.  2017-04-19 11:18:31 +0000      569 bytes  test/filter.js</tspan>
+<tspan x="10" y="170">  9.  2017-04-19 11:18:31 +0000      540 bytes  test/foldr.js</tspan>
+<tspan x="10" y="186"> 10.  2017-04-19 11:18:31 +0000      612 bytes  test/forEach.js</tspan>
+<tspan x="10" y="202"> 11.  2017-04-19 11:18:31 +0000      491 bytes  test/head.js</tspan>
+<tspan x="10" y="218"> 12.  2017-04-19 11:18:31 +0000      518 bytes  test/join.js</tspan>
+<tspan x="10" y="234"> 13.  2017-04-19 11:18:31 +0000     2296 bytes  test/lines.js</tspan>
+<tspan x="10" y="250"> 14.  2017-04-19 11:18:31 +0000      569 bytes  test/map.js</tspan>
+<tspan x="10" y="266"> 15.  2017-04-19 11:18:31 +0000      884 bytes  test/pipe.js</tspan>
+<tspan x="10" y="282"> 16.  2017-04-19 11:18:31 +0000      519 bytes  test/product.js</tspan>
+<tspan x="10" y="298"> 17.  2017-04-19 11:18:31 +0000     7128 bytes  test/range.js</tspan>
+<tspan x="10" y="314"> 18.  2017-04-19 11:18:31 +0000      541 bytes  test/skip.js</tspan>
+<tspan x="10" y="330"> 19.  2017-04-19 11:18:31 +0000      492 bytes  test/sum.js</tspan>
+<tspan x="10" y="346"> 20.  2017-04-19 11:18:31 +0000      538 bytes  test/tail.js</tspan>
+<tspan x="10" y="362"> 21.  2017-04-19 11:18:31 +0000      518 bytes  test/take.js</tspan>
+<tspan x="10" y="378"> 22.  2017-04-19 11:18:31 +0000      554 bytes  test/takeWhile.js</tspan>
 </text>
 </svg>

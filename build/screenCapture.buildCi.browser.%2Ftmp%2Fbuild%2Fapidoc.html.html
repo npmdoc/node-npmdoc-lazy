@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/pkrumins/node-lazy#readme"
-
-    >lazy (v1.0.11)</a>
+    <a href="https://github.com/pkrumins/node-lazy#readme">lazy (v1.0.11)</a>
 </h1>
 <h4>Lazy lists for node</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.lazy">module lazy</a><ol>
 
@@ -148,9 +141,9 @@
     }
 
     if (!opts) opts = {};
-    var dataName = opts.data || &#x27;data&#x27;;
-    var pipeName = opts.pipe || &#x27;pipe&#x27;;
-    var endName = opts.pipe || &#x27;end&#x27;;
+    var dataName = opts.data || 'data';
+    var pipeName = opts.pipe || 'pipe';
+    var endName = opts.pipe || 'end';
 
     if (pipeName != endName) {
         var piped = false;
@@ -168,7 +161,7 @@
         self.emit(endName);
     }
 
-    if (em &#x26;&#x26; em.on) {
+    if (em &amp;&amp; em.on) {
         em.on(endName, function () {
             self.emit(endName);
         });
@@ -176,8 +169,8 @@
             em.emit(pipeName);
         });
         // Check for v0.10 or Greater (Stream2 has Duplex type)
-        if (stream.Duplex &#x26;&#x26; em instanceof(stream)) {
-            em.on(&#x27;readable&#x27;, function () {
+        if (stream.Duplex &amp;&amp; em instanceof(stream)) {
+            em.on('readable', function () {
                 var x = em.read();
                 self.emit(dataName, x);
             });
@@ -253,7 +246,7 @@
 
     self.skip = function (n) {
         return newLazy(function () {
-            if (n &#x3e; 0) {
+            if (n &gt; 0) {
                 n--;
                 return false;
             }
@@ -264,14 +257,14 @@
     self.take = function (n) {
         return newLazy(function () {
             if (n == 0) self.emit(pipeName);
-            return n-- &#x3e; 0;
+            return n-- &gt; 0;
         });
     }
 
     self.takeWhile = function (f) {
         var cond = true;
         return newLazy(function (x) {
-            if (cond &#x26;&#x26; f(x)) return true;
+            if (cond &amp;&amp; f(x)) return true;
             cond = false;
             self.emit(pipeName);
             return false;
@@ -321,32 +314,32 @@
     var step = 1;
     var infinite = false;
 
-    if (args.length == 1 &#x26;&#x26; typeof args[0] == &#x27;number&#x27;) {
+    if (args.length == 1 &amp;&amp; typeof args[0] == 'number') {
         var i = 0, j = args[0];
     }
-    else if (args.length == 1 &#x26;&#x26; typeof args[0] == &#x27;string&#x27;) { // &#x27;start[,next]..[end]&#x27;
+    else if (args.length == 1 &amp;&amp; typeof args[0] == 'string') { // 'start[,next]..[end]'
         var arg = args[0];
         var startOpen = false, endClosed = false;
-        if (arg[0] == &#x27;(&#x27; || arg[0] == &#x27;[&#x27;) {
-            if (arg[0] == &#x27;(&#x27;) startOpen = true;
+        if (arg[0] == '(' || arg[0] == '[') {
+            if (arg[0] == '(') startOpen = true;
             arg = arg.slice(1);
         }
-        if (arg.slice(-1) == &#x27;]&#x27;) endClosed = true;
+        if (arg.slice(-1) == ']') endClosed = true;
 
-        var parts = arg.split(&#x27;..&#x27;);
+        var parts = arg.split('..');
         if (parts.length != 2)
-            throw new Error(&#x22;single argument range takes &#x27;start..&#x27; or &#x27;start..end&#x27; or &#x27;start,next..end&#x27;&#x22;);
+            throw new Error("single argument range takes 'start..' or 'start..end' or 'start,next..end'");
 
-        if (parts[1] == &#x27;&#x27;) { // &#x27;start..&#x27;
+        if (parts[1] == '') { // 'start..'
             var i = parts[0];
             infinite = true;
         }
-        else { // &#x27;start[,next]..end&#x27;
-            var progression = parts[0].split(&#x27;,&#x27;);
+        else { // 'start[,next]..end'
+            var progression = parts[0].split(',');
             if (progression.length == 1) { // start..end
                 var i = parts[0], j = parts[1];
             }
-            else { // &#x27;start,next..end&#x27;
+            else { // 'start,next..end'
                 var i = progression[0], j = parts[1];
                 step = Math.abs(progression[1]-i);
             }
@@ -356,12 +349,12 @@
         j = parseInt(j, 10);
 
         if (startOpen) {
-            if (infinite || i &#x3c; j) i++;
+            if (infinite || i &lt; j) i++;
             else i--;
         }
 
         if (endClosed) {
-            if (i &#x3c; j) j++;
+            if (i &lt; j) j++;
             else j--;
         }
     }
@@ -372,33 +365,33 @@
         }
     }
     else {
-        throw new Error(&#x22;range takes 1, 2 or 3 arguments&#x22;);
+        throw new Error("range takes 1, 2 or 3 arguments");
     }
     var lazy = new Lazy;
     var stopInfinite = false;
-    lazy.on(&#x27;pipe&#x27;, function () {
+    lazy.on('pipe', function () {
         stopInfinite = true;
     });
     if (infinite) {
         process.nextTick(function g () {
             if (stopInfinite) return;
-            lazy.emit(&#x27;data&#x27;, i++);
+            lazy.emit('data', i++);
             process.nextTick(g);
         });
     }
     else {
         process.nextTick(function () {
-            if (i &#x3c; j) {
-                for (; i&#x3c;j; i+=step) {
-                    lazy.emit(&#x27;data&#x27;, i)
+            if (i &lt; j) {
+                for (; i&lt;j; i+=step) {
+                    lazy.emit('data', i)
                 }
             }
             else {
-                for (; i&#x3e;j; i-=step) {
-                    lazy.emit(&#x27;data&#x27;, i)
+                for (; i&gt;j; i-=step) {
+                    lazy.emit('data', i)
                 }
             }
-            lazy.emit(&#x27;end&#x27;);
+            lazy.emit('end');
         });
     }
     return lazy;
@@ -411,14 +404,14 @@ The Lazy object itself has a .range property for generating all the possible ran
 
 Here are several examples:
 
-* Lazy.<span class="apidocCodeKeywordSpan">range</span>(&#x27;10..&#x27;) - infinite range starting from 10
-* Lazy.range(&#x27;(10..&#x27;) - infinite range starting from 11
+* Lazy.<span class="apidocCodeKeywordSpan">range</span>('10..') - infinite range starting from 10
+* Lazy.range('(10..') - infinite range starting from 11
 * Lazy.range(10) - range from 0 to 9
 * Lazy.range(-10, 10) - range from -10 to 9 (-10, -9, ... 0, 1, ... 9)
 * Lazy.range(-10, 10, 2) - range from -10 to 8, skipping every 2nd element (-10, -8, ... 0, 2, 4, 6, 8)
 * Lazy.range(10, 0, 2) - reverse range from 10 to 1, skipping every 2nd element (10, 8, 6, 4, 2)
 * Lazy.range(10, 0) - reverse range from 10 to 1
-* Lazy.range(&#x27;5..50&#x27;) - range from 5 to 49
+* Lazy.range('5..50') - range from 5 to 49
 ...</pre></li>
     </ul>
 
@@ -465,9 +458,9 @@ Here are several examples:
     }
 
     if (!opts) opts = {};
-    var dataName = opts.data || &#x27;data&#x27;;
-    var pipeName = opts.pipe || &#x27;pipe&#x27;;
-    var endName = opts.pipe || &#x27;end&#x27;;
+    var dataName = opts.data || 'data';
+    var pipeName = opts.pipe || 'pipe';
+    var endName = opts.pipe || 'end';
 
     if (pipeName != endName) {
         var piped = false;
@@ -485,7 +478,7 @@ Here are several examples:
         self.emit(endName);
     }
 
-    if (em &#x26;&#x26; em.on) {
+    if (em &amp;&amp; em.on) {
         em.on(endName, function () {
             self.emit(endName);
         });
@@ -493,8 +486,8 @@ Here are several examples:
             em.emit(pipeName);
         });
         // Check for v0.10 or Greater (Stream2 has Duplex type)
-        if (stream.Duplex &#x26;&#x26; em instanceof(stream)) {
-            em.on(&#x27;readable&#x27;, function () {
+        if (stream.Duplex &amp;&amp; em instanceof(stream)) {
+            em.on('readable', function () {
                 var x = em.read();
                 self.emit(dataName, x);
             });
@@ -570,7 +563,7 @@ Here are several examples:
 
     self.skip = function (n) {
         return newLazy(function () {
-            if (n &#x3e; 0) {
+            if (n &gt; 0) {
                 n--;
                 return false;
             }
@@ -581,14 +574,14 @@ Here are several examples:
     self.take = function (n) {
         return newLazy(function () {
             if (n == 0) self.emit(pipeName);
-            return n-- &#x3e; 0;
+            return n-- &gt; 0;
         });
     }
 
     self.takeWhile = function (f) {
         var cond = true;
         return newLazy(function (x) {
-            if (cond &#x26;&#x26; f(x)) return true;
+            if (cond &amp;&amp; f(x)) return true;
             cond = false;
             self.emit(pipeName);
             return false;
@@ -638,32 +631,32 @@ Here are several examples:
     var step = 1;
     var infinite = false;
 
-    if (args.length == 1 &#x26;&#x26; typeof args[0] == &#x27;number&#x27;) {
+    if (args.length == 1 &amp;&amp; typeof args[0] == 'number') {
         var i = 0, j = args[0];
     }
-    else if (args.length == 1 &#x26;&#x26; typeof args[0] == &#x27;string&#x27;) { // &#x27;start[,next]..[end]&#x27;
+    else if (args.length == 1 &amp;&amp; typeof args[0] == 'string') { // 'start[,next]..[end]'
         var arg = args[0];
         var startOpen = false, endClosed = false;
-        if (arg[0] == &#x27;(&#x27; || arg[0] == &#x27;[&#x27;) {
-            if (arg[0] == &#x27;(&#x27;) startOpen = true;
+        if (arg[0] == '(' || arg[0] == '[') {
+            if (arg[0] == '(') startOpen = true;
             arg = arg.slice(1);
         }
-        if (arg.slice(-1) == &#x27;]&#x27;) endClosed = true;
+        if (arg.slice(-1) == ']') endClosed = true;
 
-        var parts = arg.split(&#x27;..&#x27;);
+        var parts = arg.split('..');
         if (parts.length != 2)
-            throw new Error(&#x22;single argument range takes &#x27;start..&#x27; or &#x27;start..end&#x27; or &#x27;start,next..end&#x27;&#x22;);
+            throw new Error("single argument range takes 'start..' or 'start..end' or 'start,next..end'");
 
-        if (parts[1] == &#x27;&#x27;) { // &#x27;start..&#x27;
+        if (parts[1] == '') { // 'start..'
             var i = parts[0];
             infinite = true;
         }
-        else { // &#x27;start[,next]..end&#x27;
-            var progression = parts[0].split(&#x27;,&#x27;);
+        else { // 'start[,next]..end'
+            var progression = parts[0].split(',');
             if (progression.length == 1) { // start..end
                 var i = parts[0], j = parts[1];
             }
-            else { // &#x27;start,next..end&#x27;
+            else { // 'start,next..end'
                 var i = progression[0], j = parts[1];
                 step = Math.abs(progression[1]-i);
             }
@@ -673,12 +666,12 @@ Here are several examples:
         j = parseInt(j, 10);
 
         if (startOpen) {
-            if (infinite || i &#x3c; j) i++;
+            if (infinite || i &lt; j) i++;
             else i--;
         }
 
         if (endClosed) {
-            if (i &#x3c; j) j++;
+            if (i &lt; j) j++;
             else j--;
         }
     }
@@ -689,33 +682,33 @@ Here are several examples:
         }
     }
     else {
-        throw new Error(&#x22;range takes 1, 2 or 3 arguments&#x22;);
+        throw new Error("range takes 1, 2 or 3 arguments");
     }
     var lazy = new Lazy;
     var stopInfinite = false;
-    lazy.on(&#x27;pipe&#x27;, function () {
+    lazy.on('pipe', function () {
         stopInfinite = true;
     });
     if (infinite) {
         process.nextTick(function g () {
             if (stopInfinite) return;
-            lazy.emit(&#x27;data&#x27;, i++);
+            lazy.emit('data', i++);
             process.nextTick(g);
         });
     }
     else {
         process.nextTick(function () {
-            if (i &#x3c; j) {
-                for (; i&#x3c;j; i+=step) {
-                    lazy.emit(&#x27;data&#x27;, i)
+            if (i &lt; j) {
+                for (; i&lt;j; i+=step) {
+                    lazy.emit('data', i)
                 }
             }
             else {
-                for (; i&#x3e;j; i-=step) {
-                    lazy.emit(&#x27;data&#x27;, i)
+                for (; i&gt;j; i-=step) {
+                    lazy.emit('data', i)
                 }
             }
-            lazy.emit(&#x27;end&#x27;);
+            lazy.emit('end');
         });
     }
     return lazy;
@@ -728,14 +721,14 @@ The Lazy object itself has a .range property for generating all the possible ran
 
 Here are several examples:
 
-* Lazy.<span class="apidocCodeKeywordSpan">range</span>(&#x27;10..&#x27;) - infinite range starting from 10
-* Lazy.range(&#x27;(10..&#x27;) - infinite range starting from 11
+* Lazy.<span class="apidocCodeKeywordSpan">range</span>('10..') - infinite range starting from 10
+* Lazy.range('(10..') - infinite range starting from 11
 * Lazy.range(10) - range from 0 to 9
 * Lazy.range(-10, 10) - range from -10 to 9 (-10, -9, ... 0, 1, ... 9)
 * Lazy.range(-10, 10, 2) - range from -10 to 8, skipping every 2nd element (-10, -8, ... 0, 2, 4, 6, 8)
 * Lazy.range(10, 0, 2) - reverse range from 10 to 1, skipping every 2nd element (10, 8, 6, 4, 2)
 * Lazy.range(10, 0) - reverse range from 10 to 1
-* Lazy.range(&#x27;5..50&#x27;) - range from 5 to 49
+* Lazy.range('5..50') - range from 5 to 49
 ...</pre></li>
     </ul>
 
@@ -763,3 +756,4 @@ Here are several examples:
     ]
 </div>
 </div>
+</body></html>
